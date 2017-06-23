@@ -3,8 +3,9 @@ package Scheduler
 import (
 	dbbase "BlackWidow/src/Database"
 	"runtime"
-	"fmt"
+	_"fmt"
 	_"time"
+	mq "BlackWidow/src/MsgQueue"
 )
 
 type SpiderDispther struct {
@@ -12,6 +13,8 @@ type SpiderDispther struct {
 }
 
 var sDispther *SpiderDispther
+
+var qm *mq.QueenManager
 
 //初始化分发器
 func InitData (s *SpiderDispther) {
@@ -21,6 +24,8 @@ func InitData (s *SpiderDispther) {
 	/*for _, item := range  sDispther.Start_urls {
 		checkSpiderExist(item)
 	}*/
+	qm = mq.InitManager()
+
 	go getWaitUrls()
 	go checkSpiderExist(s.Start_urls)
 
@@ -52,8 +57,9 @@ func getWaitUrls() {
 	for {
 		checkChan <- 1
 		urls := dbbase.GetWaitUrls()
-		for index, item := range urls {
-			fmt.Println(index, item.Url)
+		for _, item := range urls {
+			//fmt.Println(index, item.Url)
+			qm.Push(item.Url)
 		}
 	}
 }
