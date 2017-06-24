@@ -2,7 +2,7 @@ package MsgQueue
 
 import (
 	"container/list"
-	"fmt"
+	//"fmt"
 )
 
 
@@ -19,36 +19,48 @@ type QueueHandler func(data interface{})
 
 var h QueueHandler
 
+var q *QueenManager
+
 func InitManager() *QueenManager {
-	q := new(QueenManager)
+	q = new(QueenManager)
 	q.list = list.New()
 	q.size = q.list.Len()
 	q.ch = make(chan int)
-	go q.pull()
 	return q
 }
 
 
+/*
 //读取队列
-func (q *QueenManager)pull() {
-	for {
+func (q *QueenManager)Pull() {
 		var n *list.Element
 		for e := q.list.Front(); e != nil; e = n {
 			switch e.Value.(type) {
 			case string:
-				//h(e.Value.(string))
 				fmt.Println("pull", e.Value.(string))
 			}
-			n = e.Next()
-			q.list.Remove(e)
+
 		}
 		q.ch <- 1
-	}
+}
+*/
+
+//读取队列
+func (q *QueenManager)Pull() *list.List {
+	l := list.New()
+	l.PushBackList(q.list)
+	return l
 }
 
 func (q * QueenManager)Push(data interface{}) {
 	q.list.PushBack(data)
 	q.size = q.list.Len()
-	<- q.ch
 }
+
+
+/*func (q * QueenManager)Push(data interface{}) {
+	q.list.PushBack(data)
+	q.size = q.list.Len()
+	<- q.ch
+}*/
 
