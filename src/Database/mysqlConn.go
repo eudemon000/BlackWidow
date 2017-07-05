@@ -6,6 +6,7 @@ import (
 	"BlackWidow/src/Config"
 	logUtils "BlackWidow/src/logPackage"
 	//"fmt"
+	//"fmt"
 )
 
 
@@ -21,6 +22,14 @@ type mysqlConfig struct{
 	user		string
 	password	string
 	charset		string
+}
+
+type Urls struct {
+	Url		string
+	Md5		string
+	Is_crawl	string
+	Layer		int
+	Content		string
 }
 
 //已爬取URL结构
@@ -96,6 +105,20 @@ func GetWaitUrl(url string) bool {
 		logUtils.Msg(logUtils.Error, err)
 	}*/
 
+}
+
+//从带爬取表删除
+func RemoveWaitUrl(url string) int64 {
+	result, err := Db.Exec("delete from tbl_continue_url where url like ?", url)
+	if err != nil {
+		logUtils.Msg(logUtils.Error, err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		logUtils.Msg(logUtils.Error, err)
+	}
+	return rowsAffected
 }
 
 //向已爬取列表插入数据
