@@ -51,7 +51,7 @@ func Msg(msgType string, msg ...interface{}) {
 
 func fileName(t string) string {
 	y, m, d := time.Now().Date()
-	return "log/" + strconv.Itoa(y) + strconv.Itoa(int(m)) + strconv.Itoa(d) + "_" + t + ".log"
+	return "log/" + strconv.Itoa(y) + "_" + strconv.Itoa(int(m)) + "_" + strconv.Itoa(d) + "_" + t + ".log"
 }
 
 func CheckErr(err error) {

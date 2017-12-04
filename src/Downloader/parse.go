@@ -13,9 +13,13 @@ import (
 	logUtils "BlackWidow/src/logPackage"
 	"fmt"
 	_"container/list"
+	_"BlackWidow/src/elast"
+	"BlackWidow/src/elast"
 )
 
 var cUrl string
+
+var searchKeyword = "肿瘤"
 
 func Parser(url string) []string {
 	doc, err := goquery.NewDocument(url)
@@ -28,12 +32,17 @@ func Parser(url string) []string {
 	headTag := doc.Find("head")
 	metaTag := headTag.Find("meta")
 	webCharset = checkCharset(metaTag)
+	//获取标题
+	titleTag := headTag.Find("title")
+	title := strings.Trim(formatStr(titleTag.Text(), webCharset), "")
+	fmt.Println("标题===>", title)
 	//获取页面的关键词，根据编码进行编码转换，并保存到数据库
 	keyword := checkTag(metaTag, webCharset)
 	fmt.Println("转码后===》", keyword)
 	md5, _ := utils.Md5(url)
 	urlId := Database.InsertUrls(url, md5, "YES", "1")
 	fmt.Println("url表id", urlId)
+	sendElast(title, keyword, keyword, cUrl, md5)
 	if urlId > 0 {
 		//从待爬取表里删除
 		Database.RemoveWaitUrl(url)
@@ -56,7 +65,7 @@ func checkCharset(sele *goquery.Selection) (webCharset string) {
 	defer func() {
 		if err := recover(); err != nil {
 			//fmt.Println(err)
-			logUtils.Msg(logUtils.Error, err)
+			//logUtils.Msg(logUtils.Error, err)
 		}
 	}()
 	sele.Each(func(i int, m *goquery.Selection) {
@@ -178,7 +187,7 @@ func Format(str string) (result string, ok bool) {
 		return str, true
 	}
 
-	//还要一种是相对路径，分两种情况，1、"/"开头；2、非"/"开头
+	//还有一种是相对路径，分两种情况，1、"/"开头；2、非"/"开头
 	ok, err = regexp.MatchString("^/{1}[a-zA-Z0-9]{1,}?", str)
 	if ok {
 		//需要找路径根
@@ -201,4 +210,19 @@ func Format(str string) (result string, ok bool) {
 		return re, true
 	}
 	return "", false
+}
+
+func sendElast(title, keyword, description, url, md5 string) {
+	if strings.Contains(title, searchKeyword) || strings.Contains(keyword, searchKeyword) || strings.Contains(description, searchKeyword) {
+		fmt.Println("有匹配的")
+		all := new(elast.AllSearch)
+		all.Title = title
+		all.Keyword= keyword
+		all.Description = description
+		all.Url = url
+		all.Md5 = md5
+		text := title + " " + keyword
+		elast.SendElast(all, text)
+	}
+
 }

@@ -1,20 +1,23 @@
 package Scheduler
 
 import (
-	dbbase "BlackWidow/src/Database"
-	"runtime"
-	_"fmt"
-	_"time"
-	mq "BlackWidow/src/MsgQueue"
-	"fmt"
-	_"BlackWidow/src/Downloader"
-	"sync"
-	"BlackWidow/src/Downloader"
+dbbase "BlackWidow/src/Database"
+"runtime"
+_"fmt"
+_"time"
+mq "BlackWidow/src/MsgQueue"
+"fmt"
+_"BlackWidow/src/Downloader"
+"sync"
+"BlackWidow/src/Downloader"
+"strings"
+	"time"
 )
 
 type SpiderDispther struct {
-	Start_urls	[]string
-	lock		*sync.Mutex
+	Start_urls		[]string
+	Allowed_domains	[]string
+	lock			*sync.Mutex
 }
 
 var sDispther *SpiderDispther
@@ -40,6 +43,8 @@ func InitData (s *SpiderDispther) {
 	go getWaitUrls()
 	//checkSpiderExist(s.Start_urls)
 	go checkSpiderExist()
+
+	go recordTime()
 
 }
 
@@ -68,11 +73,12 @@ var checkChan chan int = make(chan int)
 func checkSpiderExist () {
 	for {
 		for _, url := range sDispther.Start_urls {
-			fmt.Println(url)
+			fmt.Println("检查URL===>", url)
 			isExist := dbbase.GetUrl(url)
 			if isExist {
 				continue
 			}
+			//fmt.Println("检查通过===>", url)
 			waitIsExist := dbbase.GetWaitUrl(url)
 			if !waitIsExist {
 				dbbase.InsertWaitUrl(url)
@@ -90,7 +96,14 @@ func getWaitUrls() {
 		urls := dbbase.GetWaitUrls()
 		for _, item := range urls {
 			//fmt.Println(index, item.Url)
-			qm.Push(item.Url)
+			//判断URL是否为Allowed_domains允许的URL
+			for _, domain := range sDispther.Allowed_domains {
+				if strings.Contains(item.Url, domain) {
+					qm.Push(item.Url)
+					fmt.Println(item.Url, "已放入队列")
+				}
+			}
+
 		}
 	}
 }
@@ -100,6 +113,16 @@ func(s *SpiderDispther) pull(urls []string) {
 	defer s.lock.Unlock()
 	for _, item := range urls {
 		s.Start_urls = append(s.Start_urls, item)
+	}
+}
+
+func recordTime() {
+	for {
+		/*year := time.Now().Year()
+		month := time.Now().Month()
+		day := time.Now().Day()*/
+		fmt.Println(time.Now())
+		time.Sleep(10 * time.Second)
 	}
 }
 

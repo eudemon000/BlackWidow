@@ -73,6 +73,7 @@ func GetUrl(url string) bool {
 	defer rows.Close()
 	if err != nil {
 		logUtils.Msg(logUtils.Error, err)
+		return false
 	}
 	if rows.Next() {
 		return true
@@ -107,7 +108,7 @@ func GetWaitUrl(url string) bool {
 
 }
 
-//从带爬取表删除
+//从待爬取表删除
 func RemoveWaitUrl(url string) int64 {
 	result, err := Db.Exec("delete from tbl_continue_url where url like ?", url)
 	if err != nil {
