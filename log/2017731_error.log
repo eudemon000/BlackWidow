@@ -1,0 +1,6 @@
+[error]2017/07/31 09:40:49 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [EOF]
+[error]2017/07/31 09:40:49 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [EOF]
+[error]2017/07/31 09:40:52 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [dial tcp 192.168.0.215:3306: getsockopt: no route to host]
+[error]2017/07/31 09:41:37 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [EOF]
+[error]2017/07/31 09:41:37 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [EOF]
+[error]2017/07/31 09:42:41 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [dial tcp 192.168.0.215:3306: getsockopt: no route to host]

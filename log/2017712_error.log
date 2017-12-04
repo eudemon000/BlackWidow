@@ -1,0 +1,6 @@
+[error]2017/07/12 09:14:38 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [EOF]
+[error]2017/07/12 09:14:39 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [parse http:// http://www.99.com.cn/special/jnbbqm/ : invalid character " " in host name]
+[error]2017/07/12 09:14:39 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [parse http:// http://m.yyk.99.com.cn/zhifu/119881/ : invalid character " " in host name]
+[error]2017/07/12 09:14:39 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [parse http:// http://www.shouyouzhijia.net/: invalid character " " in host name]
+[error]2017/07/12 09:14:39 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [Get http://www.genmiao.com/: dial tcp: lookup www.genmiao.com on 127.0.1.1:53: no such host]
+[error]2017/07/12 09:14:39 /home/memory/goworkspace/src/BlackWidow/src/logPackage/logUtils.go:42: [Get https://breast.nvsay.com/: remote error: tls: unknown certificate]
